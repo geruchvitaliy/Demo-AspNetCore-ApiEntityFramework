@@ -1,8 +1,8 @@
 ﻿using Domain.Handlers;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,15 +27,15 @@ namespace DatabaseHandler
         public async Task Delete(Guid id)
         {
             var entity = await Set.FindAsync(id);
-            Set.Remove(entity);
+            entity.Remove();
             await Save();
         }
 
         public async Task<IEnumerable<T>> Get() =>
-            await Set.ToArrayAsync();
+            await Task.Run(() => (IEnumerable<T>)Set.Where(x => x.IsActive).ToArray());
 
         public async Task<IEnumerable<T>> Get(Func<T, bool> query) =>
-            await Task.Run(() => (IEnumerable<T>)Set.Where(query).ToArray());
+            await Task.Run(() => (IEnumerable<T>)Set.Where(x => x.IsActive).Where(query).ToArray());
 
         public Task<T> Get(Guid id) =>
             Set.FindAsync(id);

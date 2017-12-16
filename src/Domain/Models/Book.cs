@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Domain.Models
 {
     public class Book : Base
     {
+        public Book()
+        {
+            BookAuthors = Array.Empty<BookAuthor>();
+        }
+
         public Book(Guid id,
             string name,
             int numberOfPages,
@@ -18,16 +24,20 @@ namespace Domain.Models
             Name = name;
             NumberOfPages = numberOfPages;
             DateOfPublication = dateOfPublication;
-            Authors = authors ?? Array.Empty<Author>();
+            BookAuthors = authors != null ? authors.Select(x => new BookAuthor(id, x.Id, null, x)) : Array.Empty<BookAuthor>();
         }
 
         [Required]
-        public string Name { get; }
-        public int NumberOfPages { get; }
-        public DateTime? DateOfPublication { get; }
-        public IEnumerable<Author> Authors { get; }
+        public string Name { get; private set; }
+        public int NumberOfPages { get; private set; }
+        public DateTime? DateOfPublication { get; private set; }
+        public IEnumerable<BookAuthor> BookAuthors { get; private set; }
+        public IEnumerable<Author> Authors => BookAuthors.Select(x => x.Author).Where(x => x.IsActive);
 
         public Book Update(Book book, DateTime date) =>
-            new Book(Id, book.Name, book.NumberOfPages, book.DateOfPublication, CreateDate, date, book.Authors);
+            new Book(Id, book.Name, book.NumberOfPages, book.DateOfPublication, CreateDate, date, book.Authors)
+            {
+                IsActive = IsActive
+            };
     }
 }

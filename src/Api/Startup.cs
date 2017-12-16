@@ -63,7 +63,8 @@ namespace Api
 
             services.AddSingleton(_ => Configuration.Get<Common.Configuration>());
 
-            services.AddTransient<DatabaseHandler.DatabaseDbContext, DatabaseHandler.DatabaseDbContext>();
+            services.AddDbContext<DatabaseHandler.DatabaseDbContext>();
+
             services.AddTransient<IEntityHandler<Author>, DatabaseHandler.EntityHandler<Author>>();
             services.AddTransient<IEntityHandler<Book>, DatabaseHandler.EntityHandler<Book>>();
 

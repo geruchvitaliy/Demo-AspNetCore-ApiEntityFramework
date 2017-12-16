@@ -11,7 +11,7 @@ namespace Api.Controllers
     /// <summary>
     /// Books Controller
     /// </summary>
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class BooksController : BaseController
     {
         /// <summary>
