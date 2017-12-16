@@ -21,7 +21,10 @@ namespace AuthorService
         public async Task<Author> Handle(GetAuthor request, CancellationToken cancellationToken) =>
             await AuthorEntityHandler.Get(request.Id);
 
-        public async Task Handle(AddAuthor message, CancellationToken cancellationToken) =>
-            await AuthorEntityHandler.Add(message.Author);
+        public async Task Handle(AddAuthor message, CancellationToken cancellationToken)
+        {
+            AuthorEntityHandler.Add(message.Author);
+            await AuthorEntityHandler.Save();
+        }
     }
 }

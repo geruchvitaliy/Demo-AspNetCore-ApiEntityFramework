@@ -1,6 +1,7 @@
 ﻿using Domain.Handlers;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Api
@@ -61,7 +63,7 @@ namespace Api
                 c.DescribeAllEnumsAsStrings();
             });
 
-            services.AddSingleton(_ => Configuration.Get<Common.Configuration>());
+            services.AddSingleton<Common.IConfiguration>(_ => new Configuration(Configuration));
 
             services.AddDbContext<DatabaseHandler.DatabaseDbContext>();
 
@@ -96,5 +98,11 @@ namespace Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
             });
         }
+
+        public static void Main(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .Build()
+                .Run();
     }
 }

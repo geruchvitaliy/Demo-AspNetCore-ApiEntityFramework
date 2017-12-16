@@ -35,7 +35,8 @@ namespace BookService
         public async Task Handle(AddBook message, CancellationToken cancellationToken)
         {
             await CheckAndAddAuthors(message.Book, message.UserId);
-            await BookEntityHandler.Add(message.Book);
+            BookEntityHandler.Add(message.Book);
+            await BookEntityHandler.Save();
         }
 
         public async Task Handle(UpdateBook message, CancellationToken cancellationToken)
@@ -44,11 +45,15 @@ namespace BookService
             existingBook.Update(message.Book, DateTime.UtcNow);
 
             await CheckAndAddAuthors(existingBook, message.UserId);
-            await BookEntityHandler.Update(existingBook);
+            BookEntityHandler.Update(existingBook);
+            await BookEntityHandler.Save();
         }
 
-        public async Task Handle(DeleteBook message, CancellationToken cancellationToken) =>
-            await BookEntityHandler.Delete(message.Id);
+        public async Task Handle(DeleteBook message, CancellationToken cancellationToken)
+        {
+            BookEntityHandler.Delete(message.Id);
+            await BookEntityHandler.Save();
+        }
 
         async Task CheckAndAddAuthors(Book book, Guid userId) =>
             await Task.WhenAll(book.Authors.Select(a => CheckAndAddAuthor(a, userId)));

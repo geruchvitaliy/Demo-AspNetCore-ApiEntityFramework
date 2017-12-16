@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,6 +24,7 @@ namespace Domain.Models
 
         [Required]
         public string Name { get; private set; }
+        [JsonIgnore]
         public IEnumerable<BookAuthor> BookAuthors { get; private set; }
     }
 }

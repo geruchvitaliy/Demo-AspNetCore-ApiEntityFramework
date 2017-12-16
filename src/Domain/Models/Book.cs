@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -31,8 +32,11 @@ namespace Domain.Models
         public string Name { get; private set; }
         public int NumberOfPages { get; private set; }
         public DateTime? DateOfPublication { get; private set; }
+        [JsonIgnore]
         public IEnumerable<BookAuthor> BookAuthors { get; private set; }
-        public IEnumerable<Author> Authors => BookAuthors.Select(x => x.Author).Where(x => x.IsActive);
+        public IEnumerable<Author> Authors => BookAuthors
+            .Select(x => x.Author)
+            .Where(x => x.IsActive);
 
         public Book Update(Book book, DateTime date) =>
             new Book(Id, book.Name, book.NumberOfPages, book.DateOfPublication, CreateDate, date, book.Authors)

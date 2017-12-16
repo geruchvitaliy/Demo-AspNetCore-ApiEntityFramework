@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
@@ -19,11 +18,13 @@ namespace Domain.Models
             IsActive = true;
         }
 
-        [Key]
         public Guid Id { get; private set; }
-        public DateTime CreateDate { get; private set; }
-        public DateTime? UpdateDate { get; private set; }
+        public DateTime CreateDate { get; protected set; }
+        public DateTime? UpdateDate { get; protected set; }
         public bool IsActive { get; protected set; }
+
+        public void Activate() =>
+            IsActive = true;
 
         public void Remove() =>
             IsActive = false;

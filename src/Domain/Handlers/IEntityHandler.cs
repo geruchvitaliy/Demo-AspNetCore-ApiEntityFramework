@@ -10,8 +10,9 @@ namespace Domain.Handlers
         Task<IEnumerable<T>> Get();
         Task<IEnumerable<T>> Get(Func<T, bool> query);
         Task<T> Get(Guid id);
-        Task Add(T entity);
-        Task Update(T entity);
-        Task Delete(Guid id);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(Guid id);
+        Task Save();
     }
 }
