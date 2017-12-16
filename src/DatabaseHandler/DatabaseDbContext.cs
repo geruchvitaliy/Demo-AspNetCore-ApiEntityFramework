@@ -33,6 +33,7 @@ namespace DatabaseHandler
                 .HasKey(x => x.Id);
 
             modelBuilder.Entity<Book>()
+                .Ignore(x => x.Authors)
                 .HasKey(x => x.Id);
 
             modelBuilder.Entity<BookAuthor>()

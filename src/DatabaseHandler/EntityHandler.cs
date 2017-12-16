@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace DatabaseHandler
@@ -19,10 +20,28 @@ namespace DatabaseHandler
         DbSet<T> Set => DbContext.Set<T>();
 
         public async Task<IEnumerable<T>> Get() =>
-            await Task.Run(() => (IEnumerable<T>)Set.Where(x => x.IsActive).ToArray());
+            await Task.Run(() => (IEnumerable<T>)Set
+                .Where(x => x.IsActive)
+                .ToArray());
+
+        public async Task<IEnumerable<T>> Get<TProperty>(Expression<Func<T, TProperty>> includePropertyPath) =>
+            await Task.Run(() => (IEnumerable<T>)Set
+                .Include(includePropertyPath)
+                .Where(x => x.IsActive)
+                .ToArray());
 
         public async Task<IEnumerable<T>> Get(Func<T, bool> query) =>
-            await Task.Run(() => (IEnumerable<T>)Set.Where(x => x.IsActive).Where(query).ToArray());
+            await Task.Run(() => (IEnumerable<T>)Set
+                .Where(x => x.IsActive)
+                .Where(query)
+                .ToArray());
+
+        public async Task<IEnumerable<T>> Get<TProperty>(Func<T, bool> query, Expression<Func<T, TProperty>> includePropertyPath) =>
+            await Task.Run(() => (IEnumerable<T>)Set
+                .Include(includePropertyPath)
+                .Where(x => x.IsActive)
+                .Where(query)
+                .ToArray());
 
         public async Task<T> Get(Guid id) =>
             await Set.FindAsync(id);

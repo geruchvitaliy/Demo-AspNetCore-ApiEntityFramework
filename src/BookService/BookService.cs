@@ -23,14 +23,28 @@ namespace BookService
             Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public IEntityHandler<Book> BookEntityHandler { get; }
-        public IMediator Mediator { get; }
+        IEntityHandler<Book> BookEntityHandler { get; }
+        IMediator Mediator { get; }
 
-        public async Task<IEnumerable<Book>> Handle(GetBooks request, CancellationToken cancellationToken) =>
-            await BookEntityHandler.Get();
+        public async Task<IEnumerable<Book>> Handle(GetBooks request, CancellationToken cancellationToken)
+        {
+            var books = await BookEntityHandler.Get(x => x.BookAuthors);
+            var authors = await Mediator.Send(new GetAuthors(request.UserId));
 
-        public async Task<Book> Handle(GetBook request, CancellationToken cancellationToken) =>
-            await BookEntityHandler.Get(request.Id);
+            return books;
+        }
+
+        public async Task<Book> Handle(GetBook request, CancellationToken cancellationToken)
+        {
+            var book = (await BookEntityHandler.Get(x => x.Id == request.Id, x => x.BookAuthors)).SingleOrDefault();
+            if (book == null)
+                return null;
+
+            foreach (var ba in book.BookAuthors)
+                await Mediator.Send(new GetAuthor(ba.AuthorId, request.UserId));
+
+            return book;
+        }
 
         public async Task Handle(AddBook message, CancellationToken cancellationToken)
         {
@@ -61,10 +75,13 @@ namespace BookService
         async Task CheckAndAddAuthor(Author author, Guid userId)
         {
             var existingAuthor = await Mediator.Send(new GetAuthor(author.Id, userId));
-            if (existingAuthor != null)
-                return;
-
-            await Mediator.Send(new AddAuthor(author, userId));
+            if (existingAuthor == null)
+                await Mediator.Send(new AddAuthor(author, userId));
+            else
+            {
+                existingAuthor.Update(author, DateTime.UtcNow);
+                await Mediator.Send(new UpdateAuthor(existingAuthor, userId));
+            }
         }
     }
 }

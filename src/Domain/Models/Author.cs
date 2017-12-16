@@ -9,22 +9,27 @@ namespace Domain.Models
     {
         public Author()
         {
-            BookAuthors = Array.Empty<BookAuthor>();
+            BookAuthors = new List<BookAuthor>();
         }
 
         public Author(Guid id,
                 string name,
-                DateTime createDate,
-                DateTime? updateDate = null)
-            : base(id, createDate, updateDate)
+                DateTime createDate)
+            : base(id, createDate, null)
         {
             Name = name;
-            BookAuthors = Array.Empty<BookAuthor>();
+            BookAuthors = new List<BookAuthor>();
         }
 
         [Required]
         public string Name { get; private set; }
         [JsonIgnore]
         public IEnumerable<BookAuthor> BookAuthors { get; private set; }
+
+        public void Update(Author author, DateTime date)
+        {
+            Name = author.Name;
+            UpdateDate = date;
+        }
     }
 }

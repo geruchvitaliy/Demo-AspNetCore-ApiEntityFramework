@@ -1,4 +1,5 @@
-﻿using Common.Commands.Books;
+﻿using Api.Requests.Books;
+using Common.Commands.Books;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +72,7 @@ namespace Api.Controllers
         /// Creates a new book
         /// </summary>
         /// <param name="id">New book id, Guid</param>
+        /// <param name="request">Book profile</param>
         /// <returns>Empty result</returns>
         /// <response code="201">Success</response>
         /// <response code="400">If book id empty</response>
@@ -78,13 +80,15 @@ namespace Api.Controllers
         [HttpPost("id")]
         [Produces("application/json")]
         [ProducesResponseType(201)]
-        public async Task<IActionResult> Post(Guid id)
+        public async Task<IActionResult> Post(Guid id, [FromBody]CreateBookRequest request)
         {
             if (id == Guid.Empty)
                 return BadRequest();
 
-            var book = new Book(id, "No name", 0, null, DateTime.UtcNow);
-            var command = new AddBook(book, UserId);
+            if (request == null || request == CreateBookRequest.Null)
+                request = CreateBookRequest.Empty;
+
+            var command = new AddBook(request.ToBook(id), UserId);
             await Mediator.Send(command);
 
             return Ok();
@@ -94,7 +98,7 @@ namespace Api.Controllers
         /// Updates an existing book
         /// </summary>
         /// <param name="id">Book id, Guid</param>
-        /// <param name="book">Book profile</param>
+        /// <param name="request">Book profile</param>
         /// <returns>Empty result</returns>
         /// <response code="201">Success</response>
         /// <response code="400">If book id empty</response>
@@ -102,12 +106,12 @@ namespace Api.Controllers
         [HttpPatch("id")]
         [Produces("application/json")]
         [ProducesResponseType(201)]
-        public async Task<IActionResult> Patch(Guid id, [FromBody]Book book)
+        public async Task<IActionResult> Patch(Guid id, [FromBody]UpdateBookRequest request)
         {
-            if (id == Guid.Empty || id != book.Id)
+            if (id == Guid.Empty)
                 return BadRequest();
 
-            var command = new UpdateBook(book, UserId);
+            var command = new UpdateBook(request.ToBook(id), UserId);
             await Mediator.Send(command);
 
             return Ok();

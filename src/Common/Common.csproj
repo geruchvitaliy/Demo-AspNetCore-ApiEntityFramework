@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Commands\Authors\AddAuthor.cs" />
     <Compile Include="Commands\Authors\GetAuthor.cs" />
+    <Compile Include="Commands\Authors\GetAuthors.cs" />
+    <Compile Include="Commands\Authors\UpdateAuthor.cs" />
     <Compile Include="Commands\Books\DeleteBook.cs" />
     <Compile Include="Commands\Books\UpdateBook.cs" />
     <Compile Include="Commands\Command.cs" />

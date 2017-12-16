@@ -10,7 +10,7 @@ namespace Domain.Models
     {
         public Book()
         {
-            BookAuthors = Array.Empty<BookAuthor>();
+            BookAuthors = new List<BookAuthor>();
         }
 
         public Book(Guid id,
@@ -18,14 +18,13 @@ namespace Domain.Models
             int numberOfPages,
             DateTime? dateOfPublication,
             DateTime createDate,
-            DateTime? updateDate = null,
             IEnumerable<Author> authors = null)
-            : base(id, createDate, updateDate)
+            : base(id, createDate, null)
         {
             Name = name;
             NumberOfPages = numberOfPages;
             DateOfPublication = dateOfPublication;
-            BookAuthors = authors != null ? authors.Select(x => new BookAuthor(id, x.Id, null, x)) : Array.Empty<BookAuthor>();
+            BookAuthors = authors != null ? authors.Select(x => new BookAuthor(id, x.Id, null, x)).ToList() : new List<BookAuthor>();
         }
 
         [Required]
@@ -38,10 +37,13 @@ namespace Domain.Models
             .Select(x => x.Author)
             .Where(x => x.IsActive);
 
-        public Book Update(Book book, DateTime date) =>
-            new Book(Id, book.Name, book.NumberOfPages, book.DateOfPublication, CreateDate, date, book.Authors)
-            {
-                IsActive = IsActive
-            };
+        public void Update(Book book, DateTime date)
+        {
+            Name = book.Name;
+            NumberOfPages = book.NumberOfPages;
+            DateOfPublication = book.DateOfPublication;
+            BookAuthors = book.Authors != null ? book.Authors.Select(x => new BookAuthor(Id, x.Id, null, x)).ToList() : new List<BookAuthor>();
+            UpdateDate = date;
+        }
     }
 }
