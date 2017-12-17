@@ -82,7 +82,7 @@ namespace Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> Post(Guid id, [FromBody]CreateBookRequest request)
         {
-            if (id == Guid.Empty)
+            if (id == Guid.Empty || !ModelState.IsValid)
                 return BadRequest();
 
             if (request == null || request == CreateBookRequest.Null)
@@ -108,7 +108,7 @@ namespace Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> Patch(Guid id, [FromBody]UpdateBookRequest request)
         {
-            if (id == Guid.Empty)
+            if (id == Guid.Empty || !ModelState.IsValid)
                 return BadRequest();
 
             var command = new UpdateBook(request.ToBook(id), UserId);
