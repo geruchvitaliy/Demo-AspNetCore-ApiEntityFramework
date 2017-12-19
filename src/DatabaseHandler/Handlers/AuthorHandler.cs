@@ -1,4 +1,5 @@
-﻿using DatabaseHandler.Entities;
+﻿using Common.Attributes;
+using DatabaseHandler.Entities;
 using Domain.Handlers;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,8 @@ using Author = Domain.Models.Author;
 
 namespace DatabaseHandler.Handlers
 {
-    public class AuthorHandler : IEntityHandler<Author>
+    [Service]
+    class AuthorHandler : IEntityHandler<Author>
     {
         public AuthorHandler(DatabaseDbContext dbContext)
         {

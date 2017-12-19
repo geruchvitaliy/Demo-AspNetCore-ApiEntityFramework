@@ -1,11 +1,13 @@
-﻿using Common.Commands.Database;
+﻿using Common.Attributes;
+using Common.Commands.Database;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DatabaseHandler.Handlers
 {
-    public class DatabaseHandler : IRequestHandler<SaveChanges, bool>
+    [Service]
+    class DatabaseHandler : IRequestHandler<SaveChanges, bool>
     {
         public DatabaseHandler(DatabaseDbContext dbContext)
         {

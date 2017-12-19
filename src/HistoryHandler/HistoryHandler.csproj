@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{24A6FA42-1892-46A3-96D6-53754B5AB9A3}</ProjectGuid>
+    <ProjectGuid>{54528C2F-D59B-4FFA-9228-6F04CA752840}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BookService</RootNamespace>
-    <AssemblyName>BookService</AssemblyName>
+    <RootNamespace>HistoryHandler</RootNamespace>
+    <AssemblyName>HistoryHandler</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -41,9 +41,12 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BookService.cs" />
-    <Compile Include="BookServiceAssembly.cs" />
+    <Compile Include="HistoryHandler.cs" />
+    <Compile Include="HistoryHandlerAssembly.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
@@ -54,9 +57,6 @@
       <Project>{a07446ad-9de1-4596-8469-3d822c059888}</Project>
       <Name>Domain</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseDbContext.cs" />
+    <Compile Include="DatabaseHandlerAssembly.cs" />
     <Compile Include="Entities\Author.cs" />
     <Compile Include="Entities\Base.cs" />
     <Compile Include="Entities\Book.cs" />

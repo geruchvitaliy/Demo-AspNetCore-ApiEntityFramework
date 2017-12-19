@@ -1,4 +1,5 @@
-﻿using Common.Commands.Authors;
+﻿using Common.Attributes;
+using Common.Commands.Authors;
 using Common.Commands.Books;
 using Common.Commands.Database;
 using Common.Events.Books;
@@ -13,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace BookService
 {
-    public class BookService : IRequestHandler<GetBooks, IEnumerable<Book>>,
+    [Service]
+    class BookService : IRequestHandler<GetBooks, IEnumerable<Book>>,
         IRequestHandler<GetBook, Book>,
         IRequestHandler<AddBook>,
         IRequestHandler<UpdateBook>,

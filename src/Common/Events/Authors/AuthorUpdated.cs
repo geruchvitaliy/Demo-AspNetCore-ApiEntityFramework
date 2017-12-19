@@ -1,10 +1,9 @@
 ﻿using Domain.Models;
-using MediatR;
 using System;
 
 namespace Common.Events.Authors
 {
-    public class AuthorUpdated : Event, INotification
+    public class AuthorUpdated : Event
     {
         public AuthorUpdated(Author newAuthor, Author oldAuthor, Guid userId)
             : base(userId)

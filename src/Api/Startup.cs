@@ -1,6 +1,5 @@
-﻿using Domain.Handlers;
-using Domain.Models;
-using MediatR;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +29,7 @@ namespace Api
         IConfigurationBuilder Builder { get; }
         IConfigurationRoot Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
             {
@@ -62,20 +61,20 @@ namespace Api
                 c.DescribeAllEnumsAsStrings();
             });
 
-            services.AddSingleton<Common.IConfiguration>(_ => new Configuration(Configuration));
+            var container = ConfigureContainer(services);
+            return new AutofacServiceProvider(container);
+        }
 
-            services.AddDbContext<DatabaseHandler.DatabaseDbContext>();
+        public IContainer ConfigureContainer(IServiceCollection services)
+        {
+            var builder = new ContainerBuilder();
 
-            services.AddTransient<IEntityHandler<Author>, DatabaseHandler.Handlers.AuthorHandler>();
-            services.AddTransient<IEntityHandler<Book>, DatabaseHandler.Handlers.BookHandler>();
+            builder.RegisterInstance<Common.IConfiguration>(new Configuration(Configuration));
+            builder.RegisterModule<Core.CoreModule>();
 
-            services.AddTransient<DatabaseHandler.Handlers.DatabaseHandler>();
-            services.AddTransient<AuthorService.AuthorService>();
-            services.AddTransient<BookService.BookService>();
+            builder.Populate(services);
 
-            services.AddMediatR(typeof(AuthorService.AuthorService),
-                typeof(BookService.BookService),
-                typeof(DatabaseHandler.DatabaseDbContext));
+            return builder.Build();
         }
 
         public void Configure(IApplicationBuilder app,
@@ -87,6 +86,8 @@ namespace Api
 
             if (env.IsDevelopment())
                 loggerFactory.AddDebug();
+
+            app.UseMiddleware<Logging.ErrorHandlingMiddleware>();
 
             app.UseStaticFiles();
 

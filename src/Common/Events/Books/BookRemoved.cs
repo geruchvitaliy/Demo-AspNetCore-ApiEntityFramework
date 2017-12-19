@@ -1,10 +1,9 @@
 ﻿using Domain.Models;
-using MediatR;
 using System;
 
 namespace Common.Events.Books
 {
-    public class BookRemoved : Event, INotification
+    public class BookRemoved : Event
     {
         public BookRemoved(Book book, Guid userId)
             : base(userId)

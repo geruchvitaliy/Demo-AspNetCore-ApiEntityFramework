@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
 namespace Common.Events
 {
-    public abstract class Event
+    public abstract class Event : INotification
     {
         public Event(Guid userId)
         {

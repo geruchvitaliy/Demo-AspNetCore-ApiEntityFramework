@@ -1,4 +1,5 @@
-﻿using Common.Commands.Authors;
+﻿using Common.Attributes;
+using Common.Commands.Authors;
 using Common.Commands.Database;
 using Common.Events.Authors;
 using Common.Exceptions;
@@ -12,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace AuthorService
 {
-    public class AuthorService : IRequestHandler<GetAuthors, IEnumerable<Author>>,
+    [Service]
+    class AuthorService : IRequestHandler<GetAuthors, IEnumerable<Author>>,
         IRequestHandler<GetAuthor, Author>,
         IRequestHandler<AddAuthor>,
         IRequestHandler<UpdateAuthor>

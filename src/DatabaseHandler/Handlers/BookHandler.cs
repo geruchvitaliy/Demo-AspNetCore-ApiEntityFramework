@@ -1,4 +1,5 @@
-﻿using DatabaseHandler.Entities;
+﻿using Common.Attributes;
+using DatabaseHandler.Entities;
 using Domain.Handlers;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,8 @@ using Book = Domain.Models.Book;
 
 namespace DatabaseHandler.Handlers
 {
-    public class BookHandler : IEntityHandler<Book>
+    [Service]
+    class BookHandler : IEntityHandler<Book>
     {
         public BookHandler(DatabaseDbContext dbContext)
         {

@@ -1,11 +1,13 @@
 ﻿using Common;
+using Common.Attributes;
 using DatabaseHandler.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace DatabaseHandler
 {
-    public class DatabaseDbContext : DbContext
+    [Service(AsSelf = true, AsSingleton = true)]
+    class DatabaseDbContext : DbContext
     {
         public DatabaseDbContext(IConfiguration configuration) :
             base(new DbContextOptions<DatabaseDbContext>())
