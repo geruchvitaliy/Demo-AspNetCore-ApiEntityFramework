@@ -15,6 +15,6 @@ namespace Api.Requests.Books
         public IEnumerable<string> Authors { get; set; }
 
         public Book ToBook(Guid id) =>
-            new Book(id, Name, NumberOfPages, DateOfPublication, new DateTime(), Authors?.Select(x => new Author(Guid.NewGuid(), x, DateTime.UtcNow)));
+            new Book(id, Name, NumberOfPages, DateOfPublication, new DateTime(), DateTime.UtcNow, Authors?.Select(x => new Author(Guid.NewGuid(), x, DateTime.UtcNow)).ToArray());
     }
 }

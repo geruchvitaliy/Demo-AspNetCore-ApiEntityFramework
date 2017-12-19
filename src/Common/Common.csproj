@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ServiceAttribute.cs" />
     <Compile Include="Commands\Authors\AddAuthor.cs" />
     <Compile Include="Commands\Authors\GetAuthor.cs" />
     <Compile Include="Commands\Authors\GetAuthors.cs" />
@@ -54,6 +55,14 @@
     <Compile Include="Commands\Books\AddBook.cs" />
     <Compile Include="Commands\Books\GetBook.cs" />
     <Compile Include="Commands\Books\GetBooks.cs" />
+    <Compile Include="Commands\Database\SaveChanges.cs" />
+    <Compile Include="Events\Authors\AuthorAdded.cs" />
+    <Compile Include="Events\Authors\AuthorUpdated.cs" />
+    <Compile Include="Events\Books\BookAdded.cs" />
+    <Compile Include="Events\Books\BookRemoved.cs" />
+    <Compile Include="Events\Books\BookUpdated.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,31 +2,23 @@
 
 namespace Domain.Models
 {
-    public abstract class Base
+    public abstract class Base : ValueObject<Base>
     {
         public Base()
         { }
 
         public Base(Guid id,
             DateTime createDate,
-            DateTime? updateDate)
+            DateTime? updateDate = null)
             : this()
         {
             Id = id;
             CreateDate = createDate;
             UpdateDate = updateDate;
-            IsActive = true;
         }
 
-        public Guid Id { get; private set; }
-        public DateTime CreateDate { get; protected set; }
-        public DateTime? UpdateDate { get; protected set; }
-        public bool IsActive { get; protected set; }
-
-        public void Activate() =>
-            IsActive = true;
-
-        public void Remove() =>
-            IsActive = false;
+        public Guid Id { get; }
+        public DateTime CreateDate { get; }
+        public DateTime? UpdateDate { get; }
     }
 }

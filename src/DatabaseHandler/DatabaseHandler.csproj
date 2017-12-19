@@ -115,7 +115,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseDbContext.cs" />
-    <Compile Include="EntityHandler.cs" />
+    <Compile Include="Entities\Author.cs" />
+    <Compile Include="Entities\Base.cs" />
+    <Compile Include="Entities\Book.cs" />
+    <Compile Include="Entities\BookAuthor.cs" />
+    <Compile Include="Handlers\AuthorHandler.cs" />
+    <Compile Include="Handlers\BookHandler.cs" />
+    <Compile Include="Handlers\DatabaseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -133,5 +139,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

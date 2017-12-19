@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Api
@@ -67,14 +66,16 @@ namespace Api
 
             services.AddDbContext<DatabaseHandler.DatabaseDbContext>();
 
-            services.AddTransient<IEntityHandler<Author>, DatabaseHandler.EntityHandler<Author>>();
-            services.AddTransient<IEntityHandler<Book>, DatabaseHandler.EntityHandler<Book>>();
+            services.AddTransient<IEntityHandler<Author>, DatabaseHandler.Handlers.AuthorHandler>();
+            services.AddTransient<IEntityHandler<Book>, DatabaseHandler.Handlers.BookHandler>();
 
+            services.AddTransient<DatabaseHandler.Handlers.DatabaseHandler>();
             services.AddTransient<AuthorService.AuthorService>();
             services.AddTransient<BookService.BookService>();
 
             services.AddMediatR(typeof(AuthorService.AuthorService),
-                typeof(BookService.BookService));
+                typeof(BookService.BookService),
+                typeof(DatabaseHandler.DatabaseDbContext));
         }
 
         public void Configure(IApplicationBuilder app,

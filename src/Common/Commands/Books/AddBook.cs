@@ -9,7 +9,7 @@ namespace Common.Commands.Books
         public AddBook(Book book, Guid userId)
             : base(userId)
         {
-            Book = book;
+            Book = book ?? throw new ArgumentNullException(nameof(book));
         }
 
         public Book Book { get; }

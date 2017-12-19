@@ -1,5 +1,5 @@
 ﻿using Common;
-using Domain.Models;
+using DatabaseHandler.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseHandler
@@ -13,9 +13,9 @@ namespace DatabaseHandler
             Database.EnsureCreated();
         }
 
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<Book> Books { get; set; }
-        public DbSet<BookAuthor> BookAuthors { get; set; }
+        internal DbSet<Author> Authors { get; set; }
+        internal DbSet<Book> Books { get; set; }
+        internal DbSet<BookAuthor> BookAuthors { get; set; }
 
         string ConnectionString { get; }
 
@@ -31,10 +31,15 @@ namespace DatabaseHandler
 
             modelBuilder.Entity<Author>()
                 .HasKey(x => x.Id);
+            modelBuilder.Entity<Author>()
+                .Property(x => x.Name)
+                .IsRequired();
 
             modelBuilder.Entity<Book>()
-                .Ignore(x => x.Authors)
                 .HasKey(x => x.Id);
+            modelBuilder.Entity<Book>()
+                .Property(x => x.Name)
+                .IsRequired();
 
             modelBuilder.Entity<BookAuthor>()
                 .HasKey(x => new { x.BookId, x.AuthorId });

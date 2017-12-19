@@ -85,9 +85,6 @@ namespace Api.Controllers
             if (id == Guid.Empty || !ModelState.IsValid)
                 return BadRequest();
 
-            if (request == null || request == CreateBookRequest.Null)
-                request = CreateBookRequest.Empty;
-
             var command = new AddBook(request.ToBook(id), UserId);
             await Mediator.Send(command);
 

@@ -9,7 +9,7 @@ namespace Common.Commands.Authors
         public UpdateAuthor(Author author, Guid userId)
             : base(userId)
         {
-            Author = author;
+            Author = author ?? throw new ArgumentNullException(nameof(author));
         }
 
         public Author Author { get; }

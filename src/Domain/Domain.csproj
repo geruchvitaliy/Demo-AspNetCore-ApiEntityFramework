@@ -43,7 +43,6 @@
     <Compile Include="Models\Base.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Handlers\IEntityHandler.cs" />
-    <Compile Include="Models\BookAuthor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueObject.cs" />
   </ItemGroup>

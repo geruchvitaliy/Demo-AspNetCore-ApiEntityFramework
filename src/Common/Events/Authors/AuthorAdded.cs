@@ -2,11 +2,11 @@
 using MediatR;
 using System;
 
-namespace Common.Commands.Authors
+namespace Common.Events.Authors
 {
-    public class AddAuthor : Command, IRequest
+    public class AuthorAdded : Event, INotification
     {
-        public AddAuthor(Author author, Guid userId)
+        public AuthorAdded(Author author, Guid userId)
             : base(userId)
         {
             Author = author ?? throw new ArgumentNullException(nameof(author));

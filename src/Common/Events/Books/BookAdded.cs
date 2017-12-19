@@ -2,11 +2,11 @@
 using MediatR;
 using System;
 
-namespace Common.Commands.Books
+namespace Common.Events.Books
 {
-    public class UpdateBook : Command, IRequest
+    public class BookAdded : Event, INotification
     {
-        public UpdateBook(Book book, Guid userId)
+        public BookAdded(Book book, Guid userId)
             : base(userId)
         {
             Book = book ?? throw new ArgumentNullException(nameof(book));

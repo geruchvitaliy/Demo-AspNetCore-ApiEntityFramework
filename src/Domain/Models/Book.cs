@@ -1,49 +1,36 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Domain.Models
 {
     public class Book : Base
     {
-        public Book()
-        {
-            BookAuthors = new List<BookAuthor>();
-        }
-
         public Book(Guid id,
             string name,
             int numberOfPages,
             DateTime? dateOfPublication,
             DateTime createDate,
+            DateTime? updateDate = null,
             IEnumerable<Author> authors = null)
-            : base(id, createDate, null)
+            : base(id, createDate, updateDate)
         {
             Name = name;
             NumberOfPages = numberOfPages;
             DateOfPublication = dateOfPublication;
-            BookAuthors = authors != null ? authors.Select(x => new BookAuthor(id, x.Id, null, x)).ToList() : new List<BookAuthor>();
+            Authors = authors ?? Array.Empty<Author>();
         }
 
         [Required]
-        public string Name { get; private set; }
-        public int NumberOfPages { get; private set; }
-        public DateTime? DateOfPublication { get; private set; }
-        [JsonIgnore]
-        public IEnumerable<BookAuthor> BookAuthors { get; private set; }
-        public IEnumerable<Author> Authors => BookAuthors
-            .Select(x => x.Author)
-            .Where(x => x.IsActive);
+        public string Name { get; }
+        public int NumberOfPages { get; }
+        public DateTime? DateOfPublication { get; }
+        public IEnumerable<Author> Authors { get; }
 
-        public void Update(Book book, DateTime date)
-        {
-            Name = book.Name;
-            NumberOfPages = book.NumberOfPages;
-            DateOfPublication = book.DateOfPublication;
-            BookAuthors = book.Authors != null ? book.Authors.Select(x => new BookAuthor(Id, x.Id, null, x)).ToList() : new List<BookAuthor>();
-            UpdateDate = date;
-        }
+        protected override IEnumerable<object> EqualityCheckAttributes =>
+            new object[] { Id, CreateDate, UpdateDate, Name, NumberOfPages, DateOfPublication, Authors };
+
+        public Book Update(Book book, DateTime date) =>
+            new Book(Id, book.Name, book.NumberOfPages, book.DateOfPublication, CreateDate, date, book.Authors);
     }
 }

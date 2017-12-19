@@ -1,5 +1,8 @@
 ﻿using Common.Commands.Authors;
 using Common.Commands.Books;
+using Common.Commands.Database;
+using Common.Events.Books;
+using Common.Exceptions;
 using Domain.Handlers;
 using Domain.Models;
 using MediatR;
@@ -26,47 +29,50 @@ namespace BookService
         IEntityHandler<Book> BookEntityHandler { get; }
         IMediator Mediator { get; }
 
-        public async Task<IEnumerable<Book>> Handle(GetBooks request, CancellationToken cancellationToken)
-        {
-            var books = await BookEntityHandler.Get(x => x.BookAuthors);
-            var authors = await Mediator.Send(new GetAuthors(request.UserId));
+        public async Task<IEnumerable<Book>> Handle(GetBooks request, CancellationToken cancellationToken) =>
+            await BookEntityHandler.Get();
 
-            return books;
-        }
-
-        public async Task<Book> Handle(GetBook request, CancellationToken cancellationToken)
-        {
-            var book = (await BookEntityHandler.Get(x => x.Id == request.Id, x => x.BookAuthors)).SingleOrDefault();
-            if (book == null)
-                return null;
-
-            foreach (var ba in book.BookAuthors)
-                await Mediator.Send(new GetAuthor(ba.AuthorId, request.UserId));
-
-            return book;
-        }
+        public async Task<Book> Handle(GetBook request, CancellationToken cancellationToken) =>
+            await BookEntityHandler.Get(request.Id);
 
         public async Task Handle(AddBook message, CancellationToken cancellationToken)
         {
             await CheckAndAddAuthors(message.Book, message.UserId);
+
             BookEntityHandler.Add(message.Book);
-            await BookEntityHandler.Save();
+
+            await Mediator.Send(new SaveChanges());
+
+            await Mediator.Publish(new BookAdded(message.Book, message.UserId));
         }
 
         public async Task Handle(UpdateBook message, CancellationToken cancellationToken)
         {
-            var existingBook = await BookEntityHandler.Get(message.Book.Id);
-            existingBook.Update(message.Book, DateTime.UtcNow);
+            var oldBook = await BookEntityHandler.Get(message.Book.Id);
+            if (oldBook == null)
+                throw new EntityNotFoundException<Book>(message.Book);
 
-            await CheckAndAddAuthors(existingBook, message.UserId);
-            BookEntityHandler.Update(existingBook);
-            await BookEntityHandler.Save();
+            await CheckAndAddAuthors(message.Book, message.UserId);
+
+            var newBook = oldBook.Update(message.Book, DateTime.UtcNow);
+            BookEntityHandler.Update(newBook);
+
+            await Mediator.Send(new SaveChanges());
+
+            await Mediator.Publish(new BookUpdated(newBook, oldBook, message.UserId));
         }
 
         public async Task Handle(DeleteBook message, CancellationToken cancellationToken)
         {
-            BookEntityHandler.Delete(message.Id);
-            await BookEntityHandler.Save();
+            var oldBook = await BookEntityHandler.Get(message.Id);
+            if (oldBook == null)
+                throw new EntityNotFoundException<Book>(message.Id);
+
+            BookEntityHandler.Delete(oldBook);
+
+            await Mediator.Send(new SaveChanges());
+
+            await Mediator.Publish(new BookRemoved(oldBook, message.UserId));
         }
 
         async Task CheckAndAddAuthors(Book book, Guid userId) =>
