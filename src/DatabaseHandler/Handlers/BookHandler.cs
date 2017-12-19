@@ -26,10 +26,8 @@ namespace DatabaseHandler.Handlers
 
         public void Delete(Book model)
         {
-            var entity = model.ToEntity();
+            var entity = DbContext.Books.Find(model.Id);
             entity.IsActive = false;
-
-            DbContext.Books.Attach(entity);
         }
 
         public async Task<IEnumerable<Book>> Get() =>
@@ -38,7 +36,6 @@ namespace DatabaseHandler.Handlers
                 .ThenInclude(x => x.Author)
                 .Where(x => x.IsActive)
                 .Select(x => x.ToModel())
-                .AsNoTracking()
                 .ToArrayAsync();
 
         public async Task<Book> Get(Guid id)
@@ -46,7 +43,6 @@ namespace DatabaseHandler.Handlers
             var entity = await DbContext.Books
                 .Include(x => x.BookAuthors)
                 .ThenInclude(x => x.Author)
-                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id);
             if (entity == null || !entity.IsActive)
                 return null;
@@ -57,7 +53,7 @@ namespace DatabaseHandler.Handlers
         public void Update(Book model)
         {
             AddOrRemoveBookAuthors(model);
-            DbContext.Books.Attach(model.ToEntity());
+            DbContext.Reattach(model.ToEntity());
         }
 
         void AddOrRemoveBookAuthors(Book model)

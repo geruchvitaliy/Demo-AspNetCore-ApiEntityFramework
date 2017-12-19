@@ -23,24 +23,19 @@ namespace DatabaseHandler.Handlers
 
         public void Delete(Author model)
         {
-            var entity = model.ToEntity();
+            var entity = DbContext.Authors.Find(model.Id);
             entity.IsActive = false;
-
-            DbContext.Authors.Attach(entity);
         }
 
         public async Task<IEnumerable<Author>> Get() =>
             await DbContext.Authors
                 .Where(x => x.IsActive)
                 .Select(x => x.ToModel())
-                .AsNoTracking()
                 .ToArrayAsync();
 
         public async Task<Author> Get(Guid id)
         {
-            var entity = await DbContext.Authors
-                .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Id == id);
+            var entity = await DbContext.Authors.FindAsync(id);
             if (entity == null || !entity.IsActive)
                 return null;
 
@@ -48,6 +43,6 @@ namespace DatabaseHandler.Handlers
         }
 
         public void Update(Author model) =>
-            DbContext.Authors.Attach(model.ToEntity());
+            DbContext.Reattach(model.ToEntity());
     }
 }

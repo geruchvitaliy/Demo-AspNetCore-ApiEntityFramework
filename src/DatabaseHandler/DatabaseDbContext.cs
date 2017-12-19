@@ -1,13 +1,14 @@
 ﻿using Common;
 using DatabaseHandler.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DatabaseHandler
 {
     public class DatabaseDbContext : DbContext
     {
-        public DatabaseDbContext(IConfiguration configuration, DbContextOptions<DatabaseDbContext> options) :
-            base(options)
+        public DatabaseDbContext(IConfiguration configuration) :
+            base(new DbContextOptions<DatabaseDbContext>())
         {
             ConnectionString = configuration.Value("Database", "ConnectionString");
             Database.EnsureCreated();
@@ -18,6 +19,21 @@ namespace DatabaseHandler
         internal DbSet<BookAuthor> BookAuthors { get; set; }
 
         string ConnectionString { get; }
+
+        internal void Reattach<T>(T entity) where T : Base
+        {
+            if (Entry(entity).State != EntityState.Detached)
+                return;
+
+            var oldEntity = ChangeTracker
+                .Entries<T>()
+                .SingleOrDefault(x => x.Entity.Id == entity.Id);
+            if (oldEntity != null)
+                oldEntity.State = EntityState.Detached;
+
+            Attach(entity);
+            Entry(entity).State = EntityState.Modified;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

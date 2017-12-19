@@ -8,7 +8,6 @@ using Domain.Models;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,8 +74,11 @@ namespace BookService
             await Mediator.Publish(new BookRemoved(oldBook, message.UserId));
         }
 
-        async Task CheckAndAddAuthors(Book book, Guid userId) =>
-            await Task.WhenAll(book.Authors.Select(a => CheckAndAddAuthor(a, userId)));
+        async Task CheckAndAddAuthors(Book book, Guid userId)
+        {
+            foreach (var author in book.Authors)
+                await CheckAndAddAuthor(author, userId);
+        }
 
         async Task CheckAndAddAuthor(Author author, Guid userId)
         {
